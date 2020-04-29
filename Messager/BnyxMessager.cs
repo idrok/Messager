@@ -79,7 +79,8 @@ namespace Bnyx.Messager {
             else
             {
                 //async TODO
-                
+                // async wrap sync code ???
+                Observable.Start(() => { }, Scheduler.ThreadPool);
             }
         }
 
