@@ -10,7 +10,9 @@
  */
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using Bnyx.AI;
+using Tang;
 using UniRx;
 
 namespace Bnyx.Messager {
@@ -69,7 +71,7 @@ namespace Bnyx.Messager {
         #endregion
 
         #region 发布组功能
-        public void Public<T> (MessageFixed fixedType, T value, bool sync = true) where T : IMessage, new()
+        public async void Public<T> (MessageFixed fixedType, T value, bool sync = true) where T : IMessage, new()
         {
             var broker = GetFixedBroker(fixedType);
             if (sync == true)
@@ -78,21 +80,35 @@ namespace Bnyx.Messager {
             }
             else
             {
-                //async TODO
-                // async wrap sync code ???
-                Observable.Start(() => { }, Scheduler.ThreadPool);
+                await Task.Run(() => broker.Publish(value));
             }
         }
 
-        public void Public<T>(Message multiType, T value, bool sync = true) where T : IMessage, new()
+        public async void Public<T>(Message multiType, T value, bool sync = true) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
-            foreach(var entity in query)
+            if (sync == true)
             {
-                if (entity.Valid == true)
+                foreach (var entity in query)
                 {
-                    entity.Broker.Publish(value);
+                    if (entity.Valid == true)
+                    {
+                        entity.Broker.Publish(value);
+                    }
                 }
+            }
+            else
+            {
+                await Task.Run(() =>
+                {
+                    foreach (var entity in query)
+                    {
+                        if (entity.Valid == true)
+                        {
+                            entity.Broker.Publish(value);
+                        }
+                    }
+                });
             }
             // throw new BnyxMessageException($"当前发送的消息类型组不存在{multiType}");
         }

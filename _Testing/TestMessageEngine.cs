@@ -39,10 +39,12 @@ namespace Bnyx.AI
             messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
 
             var msg = new MSG_NEWDAY() {Emotion = "fresh sync code..."};
-            messager.Public(Message.UI_CORE_FORM, msg);
+            messager.Public(Message.UI_CORE_FORM, msg, true);
 
             Message msg2 = default(Message);
             var msg3 = msg2.Build(Message.UI_BAG, Message.UI_TOP_HEAD);
+            Debug.LogFormat("-------------msg2:" + msg2);
+            Debug.LogFormat("-------------msg3:" + msg3);
             // foreach (var VARIABLE in msg.)
             // {
             //     

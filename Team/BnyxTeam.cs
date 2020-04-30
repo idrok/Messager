@@ -23,6 +23,9 @@ namespace Bnyx.AI
         // 默认添加一个敌对组
         private EnemyGroup mDefaultEnemyGroup;
 
+        // 默认在第一个组里面处理
+        private byte mDefaultIndex = 0;
+        
         #region [singleton] 单列模式创建
         private static BnyxTeam _singleton = null;
         private static object _lock = new object();
@@ -121,6 +124,11 @@ namespace Bnyx.AI
             return mPlayers;
         }
 
+        public TeamEntity GetDefaultPlayer()
+        {
+            return mPlayers[mDefaultIndex].Units()[mDefaultIndex];
+        }
+
         public int GetPlayerGroupCount()
         {
             return mPlayers.Count;
@@ -192,6 +200,11 @@ namespace Bnyx.AI
         public List<EnemyGroup> GetEnemyGroup()
         {
             return mEnemies;
+        }
+
+        public TeamEntity GetDefaultEnemy()
+        {
+            return mEnemies[mDefaultIndex].Units()[mDefaultIndex];
         }
 
         public int GetEnemyGroupCount()
