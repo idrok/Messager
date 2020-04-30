@@ -23,6 +23,8 @@ namespace Bnyx.Messager {
         // 同步消息，第一时间会收到，先发先到，有序消息列表
         // 异步消息，无序，会收到
 
+        private bool mNeedDistinct = true;
+
         #region [singleton] 单列模式创建
         private static BnyxMessager _singleton = null;
         private static object _lock = new object ();
@@ -69,9 +71,16 @@ namespace Bnyx.Messager {
             }
 
             var observables = caches.ToArray();
-            var merge = Observable.Merge(observables).Distinct();
+            var merge = Observable.Merge(observables);
             
-            return merge;
+            if (mNeedDistinct)
+            {
+               return merge.Distinct();
+            }
+            else
+            {
+                return merge;
+            }
             // throw new BnyxMessageException($"当前接受的消息类型组不存在{multiType}");
         }
         
