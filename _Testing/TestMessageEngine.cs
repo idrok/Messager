@@ -12,6 +12,8 @@ namespace Bnyx.AI
 {
     public class TestMessageEngine : MonoBehaviour
     {
+        private BnyxMessager _messager;
+
         private void Start()
         {
             MessageManager.Instance.Init();
@@ -37,12 +39,9 @@ namespace Bnyx.AI
             // var result = Observable.Merge(ob, ob1);
             // result.Subscribe(i => print("-------------------i:" + i));
 
-            var messager = BnyxMessager.GetSingleton();
+            _messager = BnyxMessager.GetSingleton();
             var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
-            messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
-
-            var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." };
-            messager.Public(Message.UI_CORE_FORM, msg, false);
+            _messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
 
             Message msg2 = default(Message);
             var msg3 = msg2.Build(Message.UI_BAG, Message.UI_TOP_HEAD);
@@ -53,7 +52,7 @@ namespace Bnyx.AI
             //     
             // }
             
-            TestThread();
+            //TestThread();
         }
 
         private void TestThread()
@@ -67,10 +66,13 @@ namespace Bnyx.AI
 
         private void Update()
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 //MessageManager.Instance.Dispatch("MSG_LOCAL", new object[]{"bnyx", Time.deltaTime.ToString()});
-                MessageBroker.Default.Publish( new MSG_NEWDAY() { Emotion = "not bad!"});
+                // MessageBroker.Default.Publish( new MSG_NEWDAY() { Emotion = "not bad!"});
+                
+                var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." };
+                _messager.Public(Message.UI_CORE_FORM | Message.UI_CORE_AWARD, msg, false);
             }
         }
         

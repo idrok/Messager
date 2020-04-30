@@ -11,10 +11,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Bnyx.AI;
 using Tang;
 using UniRx;
+using UnityEngine;
 
 namespace Bnyx.Messager {
     public class BnyxMessager {
@@ -56,16 +58,20 @@ namespace Bnyx.Messager {
         {
             var query = mProvider.Provider(multiType);
             IObservable<T> root = Observable.Empty<T>();
+            List<IObservable<T>> caches = new List<IObservable<T>>();
             foreach(var entity in query)
             {
                 if (entity.Valid == true)
                 {
                     var receive = entity.Broker.Receive<T>();
-                    root = root.Merge(receive);
+                    caches.Add(receive);
                 }
             }
+
+            var observables = caches.ToArray();
+            var merge = Observable.Merge(observables).Distinct();
             
-            return root;
+            return merge;
             // throw new BnyxMessageException($"当前接受的消息类型组不存在{multiType}");
         }
         
@@ -108,6 +114,8 @@ namespace Bnyx.Messager {
                     entity.Broker.Publish(value);
                 }
             }
+            
+            // Debug.LogFormat("----------------Broadcast:" + Thread.CurrentThread.ManagedThreadId);
         }
 
         #endregion

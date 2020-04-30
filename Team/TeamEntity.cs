@@ -24,6 +24,11 @@ namespace Bnyx.AI
             set => mEntity = value;
         }
 
+        public Transform Body
+        {
+            get => mEntity.transform;
+        }
+
         public int Ids
         {
             get => mId;

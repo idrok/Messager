@@ -89,7 +89,7 @@ namespace Bnyx.Messager
                     entity.Broker = broker;
                     entity.Valid = true;
                     cache.Add(entity);
-                    Debug.LogFormat($"---------------name:{value.ToString()}---value:{(uint) value}"); 
+                    // Debug.LogFormat($"---------------name:{value.ToString()}---value:{(uint) value}"); 
                 }
                 
             }
