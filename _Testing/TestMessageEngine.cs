@@ -38,8 +38,8 @@ namespace Bnyx.AI
             var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
             messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
 
-            var msg = new MSG_NEWDAY() {Emotion = "fresh sync code..."};
-            messager.Public(Message.UI_CORE_FORM, msg, true);
+            var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." };
+            messager.Public(Message.UI_CORE_FORM, msg, false);
 
             Message msg2 = default(Message);
             var msg3 = msg2.Build(Message.UI_BAG, Message.UI_TOP_HEAD);
