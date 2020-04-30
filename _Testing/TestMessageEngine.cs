@@ -1,8 +1,11 @@
 using System;
+using System.Threading;
+using BehaviorDesigner.Runtime.Tasks;
 using Bnyx.Messager;
 using Tang;
 using UniRx;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
 using Time = Tang.Time;
 
 namespace Bnyx.AI
@@ -49,6 +52,17 @@ namespace Bnyx.AI
             // {
             //     
             // }
+            
+            TestThread();
+        }
+
+        private void TestThread()
+        {
+            // run on multi threads
+            new Thread(() => Debug.LogFormat("UniId:" + Thread.CurrentThread.ManagedThreadId)).Start();
+            
+            // run on thread pool empty thread
+            Task.Run(() => Debug.LogFormat("TaskId:" + Thread.CurrentThread.ManagedThreadId));
         }
 
         private void Update()

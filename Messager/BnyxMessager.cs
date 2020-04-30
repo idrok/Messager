@@ -1,6 +1,6 @@
 /**
  * 基于UniRx的游戏消息管理，可以实现同步消息，异步消息
- * v 1.0
+ * v 1.1
  # 可以自定义消息池子
  # 可以实现多对多的消息发送和接收
  # 实例化同步锁
@@ -10,6 +10,7 @@
  */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bnyx.AI;
 using Tang;
@@ -71,7 +72,7 @@ namespace Bnyx.Messager {
         #endregion
 
         #region 发布组功能
-        public async void Public<T> (MessageFixed fixedType, T value, bool sync = true) where T : IMessage, new()
+        public void Public<T> (MessageFixed fixedType, T value, bool sync = true) where T : IMessage, new()
         {
             var broker = GetFixedBroker(fixedType);
             if (sync == true)
@@ -80,7 +81,7 @@ namespace Bnyx.Messager {
             }
             else
             {
-                await Task.Run(() => broker.Publish(value));
+                Task.Run(() => broker.Publish(value));
             }
         }
 
@@ -89,29 +90,26 @@ namespace Bnyx.Messager {
             var query = mProvider.Provider(multiType);
             if (sync == true)
             {
-                foreach (var entity in query)
-                {
-                    if (entity.Valid == true)
-                    {
-                        entity.Broker.Publish(value);
-                    }
-                }
+                Broadcast(value, query);
             }
             else
             {
-                await Task.Run(() =>
-                {
-                    foreach (var entity in query)
-                    {
-                        if (entity.Valid == true)
-                        {
-                            entity.Broker.Publish(value);
-                        }
-                    }
-                });
+                Task.Run(() => Broadcast(value, query));
             }
             // throw new BnyxMessageException($"当前发送的消息类型组不存在{multiType}");
         }
+
+        private void Broadcast<T>(T value, List<FilterEntity> query) where T : IMessage, new()
+        {
+            foreach (var entity in query)
+            {
+                if (entity.Valid == true)
+                {
+                    entity.Broker.Publish(value);
+                }
+            }
+        }
+
         #endregion
         
         private MessageBroker GetFixedBroker(MessageFixed fixedType)
