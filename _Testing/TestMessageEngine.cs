@@ -58,10 +58,36 @@ namespace Bnyx.AI
         private void TestThread()
         {
             // run on multi threads
-            new Thread(() => Debug.LogFormat("UniId:" + Thread.CurrentThread.ManagedThreadId)).Start();
+            new Thread(() => Debug.LogFormat("UniId:" + Thread.CurrentThread.IsThreadPoolThread)).Start();
             
             // run on thread pool empty thread
             Task.Run(() => Debug.LogFormat("TaskId:" + Thread.CurrentThread.ManagedThreadId));
+            
+            ThreadPool.GetAvailableThreads(out int threads, out int io);
+            Debug.LogFormat($"Available Threads:{threads} Completion:{io}");
+            
+            // 最大线程数 = works + io = 800 + 200 = 1000
+            // 如果线程数量大于1000则进入队列等待
+            ThreadPool.GetMaxThreads(out int max, out int iomax);
+            Debug.LogFormat($"Max Threads:{max} Completion:{iomax}");
+
+            ThreadPool.QueueUserWorkItem(_ => { Debug.LogFormat("work thread:" + Thread.CurrentThread.ManagedThreadId); });
+            // ThreadPool.QueueUserWorkItem ≈ Task.Run ≈ Threading.Timer
+            Task.Run(() => Debug.LogFormat($"Task.Run is threadpool:" + Thread.CurrentThread.IsThreadPoolThread));
+
+            var timer = new System.Threading.Timer(_ =>
+            {
+                Debug.LogFormat($"Threading.Timer:" + Thread.CurrentThread.IsThreadPoolThread);
+            }, null, TimeSpan.FromSeconds(5f), TimeSpan.Zero);
+            //timer.
+
+            Observable.Start(() => { Debug.LogFormat($"Observable.Start:" + Thread.CurrentThread.IsThreadPoolThread); })//true
+                .Subscribe(_ => Debug.LogFormat($"Subscribe:" + Thread.CurrentThread.IsThreadPoolThread));//true
+            
+            Debug.LogFormat($"Unity.Thread:" + Thread.CurrentThread.IsThreadPoolThread);
+
+            Observable.TimerFrame(10).Subscribe(_ =>
+                Debug.LogFormat($"Observable.Timer:" + Thread.CurrentThread.IsThreadPoolThread));//false
         }
 
         private void Update()

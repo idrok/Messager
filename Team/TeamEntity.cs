@@ -18,6 +18,8 @@ namespace Bnyx.AI
         // 权重占比 = weight/Sum(weight)
         private float mWeightPercent;
 
+        private Transform mDummyCache;
+
         public GameObject Entity
         {
             get => mEntity;
@@ -26,7 +28,25 @@ namespace Bnyx.AI
 
         public Transform Body
         {
-            get => mEntity.transform;
+            get
+            {
+                // advance code, once init would cache everywhere
+                if (mDummyCache == null)
+                {
+                    var dummy = mEntity.transform.FindChild("PointPrefab");
+                    
+                    if (dummy != null)
+                    {
+                        mDummyCache = dummy;
+                    }
+                    else
+                    {
+                        mDummyCache = mEntity.transform;
+                    }
+                }
+                
+                return mDummyCache;
+            }
         }
 
         public int Ids
