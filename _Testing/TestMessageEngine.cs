@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using BehaviorDesigner.Runtime.Tasks;
 using Bnyx.Messager;
@@ -52,6 +54,20 @@ namespace Bnyx.AI
             //     
             // }
             
+            var l1 = new List<byte>() { 1, 3, 5 };
+            var l2 = new List<byte>() { 2, 4, 6, 5, 3, 1 };
+            // 超集 去重复
+            var union = l1.Union(l2);
+            union.ToList().ForEach(x => Debug.LogFormat("ll:" + x));
+
+            // 差集 l2-l1
+            var except = l2.Except(l1);
+            Array.ForEach(except.ToArray(), by => Debug.LogFormat("by:" + by));
+
+            // 串联
+            var concat = l1.Concat(l2);
+            concat.ToList().ForEach(y => Debug.LogFormat("cc:" + y));
+            
             //TestThread();
         }
 
@@ -88,6 +104,7 @@ namespace Bnyx.AI
 
             Observable.TimerFrame(10).Subscribe(_ =>
                 Debug.LogFormat($"Observable.Timer:" + Thread.CurrentThread.IsThreadPoolThread));//false
+            
         }
 
         private void Update()

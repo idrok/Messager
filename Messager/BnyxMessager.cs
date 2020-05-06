@@ -60,18 +60,29 @@ namespace Bnyx.Messager {
         {
             var query = mProvider.Provider(multiType);
             IObservable<T> root = Observable.Empty<T>();
-            List<IObservable<T>> caches = new List<IObservable<T>>();
-            foreach(var entity in query)
+            //List<IObservable<T>> caches = new List<IObservable<T>>();
+            IObservable<T>[] array = new IObservable<T>[query.Count]; 
+            // foreach(var entity in query)
+            // {
+            //     if (entity.Valid == true)
+            //     {
+            //         var receive = entity.Broker.Receive<T>();
+            //         caches.Add(receive);
+            //     }
+            // }
+
+            for (byte i = 0; i < array.Length; i++)
             {
+                var entity = query[i];
                 if (entity.Valid == true)
                 {
                     var receive = entity.Broker.Receive<T>();
-                    caches.Add(receive);
+                    array[i] = receive;
                 }
             }
 
-            var observables = caches.ToArray();
-            var merge = Observable.Merge(observables);
+            //var observables = caches.ToArray();
+            var merge = Observable.Merge(array);
             
             if (mNeedDistinct)
             {
