@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AI.Architecture.iRoot.Disposable
+namespace AI.Architecture.iRoot
 {
     public static class Disposable
     {

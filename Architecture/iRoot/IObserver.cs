@@ -2,7 +2,7 @@
 
 namespace AI.Architecture.iRoot
 {
-    public interface IObserver<T>
+    public interface IObserver<in T>
     {
         void OnNext(T t);
         void OnError(Exception e);

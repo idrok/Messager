@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AI.Architecture.iRoot.Disposable
+namespace AI.Architecture.iRoot
 {
     /// <summary>
     /// 自定义集合数据结构内嵌功能可以这样使用
