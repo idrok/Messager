@@ -16,14 +16,16 @@ public class TestArchitecture : MonoBehaviour
 
         Collection();
 
-        for (int i = 0; i < 1000; i++)
-        {
-            var rate = Inder(ProbabilityValue);
-            if (rate == 6)
-            {
-                Debug.LogFormat("rate:" + rate);
-            }
-        }
+        // for (int i = 0; i < 1000; i++)
+        // {
+        //     var rate = Inder(ProbabilityValue);
+        //     if (rate == 6)
+        //     {
+        //         Debug.LogFormat("rate:" + rate);
+        //     }
+        // }
+        
+        
         
     }
 
@@ -74,6 +76,11 @@ public class TestArchitecture : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if (Input.GetMouseButtonUp(0))
+        // {
+        //     System.Threading.Thread.Sleep(1000);
+        //     Debug.LogFormat("111");
+        // }
     }
 
     // HashSet<byte> set = new HashSet<byte>();

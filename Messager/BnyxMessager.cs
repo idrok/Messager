@@ -9,14 +9,9 @@
  # 2020.4.27 Code from lenggl
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using Bnyx.AI;
-using Tang;
 using UniRx;
-using UnityEngine;
 
 namespace Bnyx.Messager {
     public class BnyxMessager {
@@ -59,7 +54,7 @@ namespace Bnyx.Messager {
         public IObservable<T> Receive<T> (Message multiType) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
-            IObservable<T> root = Observable.Empty<T>();
+            //IObservable<T> root = Observable.Empty<T>();
             //List<IObservable<T>> caches = new List<IObservable<T>>();
             IObservable<T>[] array = new IObservable<T>[query.Count]; 
             // foreach(var entity in query)
@@ -111,7 +106,7 @@ namespace Bnyx.Messager {
             }
         }
 
-        public async void Public<T>(Message multiType, T value, bool sync = true) where T : IMessage, new()
+        public void Public<T>(Message multiType, T value, bool sync = true) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
             if (sync == true)
