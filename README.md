@@ -7,3 +7,5 @@ UniRx Messager for gameloop
 主要解决当前游戏中的问题：  
 1.异步资源，Addressable Ready -> Async Memory load -> Show  
 2.异步本地消息，让代码调度到线程池里面，减少主线程的负担  
+   
+https://github.com/ExcelDataReader/ExcelDataReader

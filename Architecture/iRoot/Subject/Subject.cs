@@ -6,19 +6,19 @@ namespace AI.Architecture.iRoot.Subject
     public class Subject<T> : ISubject<T>
     {
         LinkedList<IObserver<T>> observers = new LinkedList<IObserver<T>>();
-        public void OnNext(T t)
+        public void OnNext(T value)
         {
             foreach (var observer in observers)
             {
-                observer.OnNext(t);
+                observer.OnNext(value);
             }
         }
 
-        public void OnError(Exception e)
+        public void OnError(Exception error)
         {
             foreach (var observer in observers)
             {
-                observer.OnError(e);
+                observer.OnError(error);
             }
         }
 

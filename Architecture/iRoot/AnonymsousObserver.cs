@@ -22,14 +22,14 @@ namespace AI.Architecture.iRoot
                 onComplete = complete;
             }
             
-            public void OnNext(T t)
+            public void OnNext(T value)
             {
-                onNext(t);
+                onNext(value);
             }
 
-            public void OnError(Exception e)
+            public void OnError(Exception error)
             {
-                onError(e);
+                onError(error);
             }
 
             public void OnComplete()

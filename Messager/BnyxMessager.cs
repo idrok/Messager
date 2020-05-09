@@ -47,10 +47,14 @@ namespace Bnyx.Messager {
         public IObservable<T> Receive<T> (MessageFixed fixedType) where T : IMessage, new()
         {
             MessageBroker broker = GetFixedBroker(fixedType);
-            return broker.Receive<T>();
+            return broker.Receive<T>(null);
         }
 
         // 消息组订阅，可以同时接收多个类型的消息
+        // v 2.0
+        // todo bug
+        // 缓存最后一条消息数据，每次有订阅者发布当前池子里面的最新一条消息
+        // 可以避免新开的ui没有数据的尴尬局面
         public IObservable<T> Receive<T> (Message multiType) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
@@ -71,7 +75,7 @@ namespace Bnyx.Messager {
                 var entity = query[i];
                 if (entity.Valid == true)
                 {
-                    var receive = entity.Broker.Receive<T>();
+                    var receive = entity.Broker.Receive<T>(default(T));
                     array[i] = receive;
                 }
             }

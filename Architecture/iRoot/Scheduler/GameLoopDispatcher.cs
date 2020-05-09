@@ -68,6 +68,7 @@ namespace AI.Architecture.iRoot
         {
             lock (_gate)
             {
+                var _ = GameLoopDispatcher.Instance;
                 return mInstance.StartCoroutine(enumerator);
             }
         }

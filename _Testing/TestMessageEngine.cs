@@ -27,9 +27,9 @@ namespace Bnyx.AI
             
             //MessageManager.Instance.Dispatch("MSG_LOCAL", new object[]{"bnyx", "rider"});
 
-            MessageBroker.Default.Receive<MSG_NEWDAY>().Subscribe(
-                entity => 
-                Debug.LogFormat($"The Content:{entity.Emotion}"));
+            // MessageBroker.Default.Receive<MSG_NEWDAY>(null).Subscribe(
+            //     entity => 
+            //     Debug.LogFormat($"The Content:{entity.Emotion}"));
 
             // var pool = new PoolProvider();
             // pool.InitPoolable();
@@ -114,8 +114,15 @@ namespace Bnyx.AI
                 //MessageManager.Instance.Dispatch("MSG_LOCAL", new object[]{"bnyx", Time.deltaTime.ToString()});
                 // MessageBroker.Default.Publish( new MSG_NEWDAY() { Emotion = "not bad!"});
                 
-                var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." };
+                var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." + Time.realtimeSinceStartup};
                 _messager.Public(Message.UI_CORE_FORM | Message.UI_CORE_AWARD, msg, false);
+            }
+
+            if (Input.GetKeyUp(KeyCode.T))
+            {
+                var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
+                _messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
+
             }
         }
         

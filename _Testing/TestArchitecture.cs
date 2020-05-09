@@ -1,10 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AI.Architecture.iRoot;
+using UniRx;
 using UnityEngine;
+using CompositeDisposable = AI.Architecture.iRoot.CompositeDisposable;
+using ObservableWWW = AI.Architecture.iRoot.ObservableWWW;
+using Random = UnityEngine.Random;
 
 public class TestArchitecture : MonoBehaviour
 {
@@ -24,9 +30,15 @@ public class TestArchitecture : MonoBehaviour
         //         Debug.LogFormat("rate:" + rate);
         //     }
         // }
+    }
+
+    void Subject()
+    {
+        Subject<byte> subject = new Subject<byte>();
         
+        AsyncSubject<byte> async = new AsyncSubject<byte>();
         
-        
+        BehaviorSubject<byte> behaviorSubject = new BehaviorSubject<byte>(1);
     }
 
     void Collection()
@@ -74,13 +86,27 @@ public class TestArchitecture : MonoBehaviour
     }
 
     // Update is called once per frame
+    private string fileName = "temp_xlsx.xlsx";
+
     void Update()
     {
-        // if (Input.GetMouseButtonUp(0))
-        // {
-        //     System.Threading.Thread.Sleep(1000);
-        //     Debug.LogFormat("111");
-        // }
+        if (Input.GetMouseButtonUp(0))
+        {
+            // var path = Application.dataPath;
+            // path = Path.Combine(path, fileName);
+            //
+            //
+            // Debug.LogFormat("path:" + path);
+
+
+            var http = ObservableWWW.Get("http://www.baidu.com");
+
+            void OnNext(string value) => Debug.Log($"Success:{value}");
+            void OnError(Exception error) => Debug.LogException(error);
+            void OnComplete() => Debug.Log("Complete");
+
+            http.Subscribe(OnNext, OnError, OnComplete);
+        }
     }
 
     // HashSet<byte> set = new HashSet<byte>();
@@ -90,6 +116,13 @@ public class TestArchitecture : MonoBehaviour
     float[] ProbabilityValue = new float[7] {0.05f, 0.1f, 0.1f, 0.2f, 0.25f, 0.3f, 1f};
     //string[] Probability = new string[7] {0.05f, 0.1f, 0.1f, 0.2f, 0.25f, 0.3f, 1f};
 
+    /// <summary>
+    /// 经典转盘概率算法，
+    /// 准确度 ★★★★★
+    /// 难度  ★
+    /// </summary>
+    /// <param name="ProbabilityValue"></param>
+    /// <returns></returns>
     private int Inder(float[] ProbabilityValue)
     {
         float total = 0;

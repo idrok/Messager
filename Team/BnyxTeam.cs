@@ -129,6 +129,24 @@ namespace Bnyx.AI
             return mPlayers[mDefaultIndex].Units()[mDefaultIndex];
         }
 
+        /// <summary>
+        /// 计算出离我最近的玩家，当前返回第一个进入的玩家
+        /// </summary>
+        /// <param name="entity">敌方实体</param>
+        /// <returns></returns>
+        public TeamEntity GetNearestPlayer(TeamEntity entity)
+        {
+            var playerGroup = mPlayers[mDefaultIndex];
+            var players = playerGroup.Units();
+
+            foreach (var player in players)
+            {
+                // todo calc
+            }
+
+            return GetDefaultPlayer();
+        }
+
         public int GetPlayerGroupCount()
         {
             return mPlayers.Count;
