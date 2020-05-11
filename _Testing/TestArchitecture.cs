@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AI.Architecture.iRoot;
 using UniRx;
 using UnityEngine;
+using Observable = AI.Architecture.iRoot.Observable;
 using CompositeDisposable = AI.Architecture.iRoot.CompositeDisposable;
 using ObservableWWW = AI.Architecture.iRoot.ObservableWWW;
 using Random = UnityEngine.Random;
@@ -30,6 +31,30 @@ public class TestArchitecture : MonoBehaviour
         //         Debug.LogFormat("rate:" + rate);
         //     }
         // }
+        
+        Observable1();
+    }
+
+    void Observable1()
+    {
+        var one = Observable.Range(3, 3);
+        one.Subscribe(Method());
+
+        AI.Architecture.iRoot.IObserver<int> Method()
+        {
+            return AnonymsousObserver.Create<int>(v => Debug.LogFormat($"v:{v}"), err => { }, () => { });
+        }
+        
+        Observable.Range(1, 5).Select(v => v > 3).Subscribe(v => Debug.LogFormat($"v:{v} v > 3 value:{v > 3}"));
+        
+        // List<byte> ls = new List<byte>();
+        // ls.Add(3);
+        // ls.Add(5);
+        // ls.Add(7);
+        // ls.Add(9);
+        // ls.Add(11);
+        // Predicate<byte> prd = b => b > 10;
+        // var result = prd(20);
     }
 
     void Subject()
