@@ -21,9 +21,8 @@ namespace AI.Target
             set => mEntity = value;
         }
 
-        private IEnumerator Awake()
+        private void Awake()
         {
-            yield return null;
             Initialzie();
         }
 

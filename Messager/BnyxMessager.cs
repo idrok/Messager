@@ -7,6 +7,9 @@
  # 内置游戏的通用消息管理
  # Copyright XHTT com.
  # 2020.4.27 Code from lenggl
+// v 2.0
+// 缓存最后一条消息数据，每次有订阅者发布当前池子里面的最新一条消息
+// 可以避免新开的ui没有数据的尴尬局面
  */
 using System;
 using System.Collections.Generic;
@@ -50,12 +53,19 @@ namespace Bnyx.Messager {
             return broker.Receive<T>(null);
         }
 
-        // 消息组订阅，可以同时接收多个类型的消息
-        // v 2.0
-        // todo bug
-        // 缓存最后一条消息数据，每次有订阅者发布当前池子里面的最新一条消息
-        // 可以避免新开的ui没有数据的尴尬局面
-        public IObservable<T> Receive<T> (Message multiType) where T : IMessage, new()
+        public T RefSeek<T>(T value) where T : IMessage, new()
+        {
+            return value;
+        }
+        
+        /// <summary>
+        /// 订阅消息组
+        /// </summary>
+        /// <param name="multiType">作用域</param>
+        /// <param name="seek">种子数据，第一次有效</param>
+        /// <typeparam name="T">种子数据类型</typeparam>
+        /// <returns>可观察的结果</returns>
+        public IObservable<T> Receive<T> (Message multiType, T seek = null) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
             //IObservable<T> root = Observable.Empty<T>();
@@ -69,19 +79,20 @@ namespace Bnyx.Messager {
             //         caches.Add(receive);
             //     }
             // }
-
+            
+            var value = new T();
             for (byte i = 0; i < array.Length; i++)
             {
                 var entity = query[i];
                 if (entity.Valid == true)
                 {
-                    var receive = entity.Broker.Receive<T>(default(T));
-                    array[i] = receive;
+                    var receive = entity.Broker.Receive<T>(seek??value);
+                    array[i] = receive; 
                 }
             }
 
             //var observables = caches.ToArray();
-            var merge = Observable.Merge(array);
+            var merge = Observable.Merge(array);//.DefaultIfEmpty(value);
             
             if (mNeedDistinct)
             {
