@@ -59,7 +59,9 @@ namespace AI.Target
         // todo 分成二次搜索，第一次模糊查询，第二次精确查找
         public BnyxTargetList SearchEntity(Predicate<TeamEntity> predicate)
         {
+            mTargetList.Clear();
             var enemies = GetEnemyMatchList();
+            Debug.LogFormat($"第一次搜索到的ememies数量：{enemies.Count}");
             foreach (var enemy in enemies)
             {
                 var pred = predicate(enemy);
@@ -68,11 +70,8 @@ namespace AI.Target
                     if (mTargetList.Contains(enemy) == false)
                     {
                         mTargetList.Add(enemy);
+                        Debug.LogFormat($"查找到符合条件的enemy：{enemy.Entity}");
                     }
-                }
-                else
-                {
-                    mTargetList.Remove(enemy);
                 }
             }
 

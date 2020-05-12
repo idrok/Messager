@@ -6,6 +6,6 @@ namespace AI.Architecture.iRoot
     {
         void OnNext(T value);
         void OnError(Exception error);
-        void OnComplete();
+        void OnCompleted();
     }
 }

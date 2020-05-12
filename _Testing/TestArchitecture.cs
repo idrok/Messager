@@ -32,7 +32,8 @@ public class TestArchitecture : MonoBehaviour
         //     }
         // }
         
-        Observable1();
+        // Observable1();
+        TestPrid(i => i > 3);
     }
 
     void Observable1()
@@ -55,6 +56,17 @@ public class TestArchitecture : MonoBehaviour
         // ls.Add(11);
         // Predicate<byte> prd = b => b > 10;
         // var result = prd(20);
+        
+    }
+
+    void TestPrid(Predicate<byte> input)
+    {
+        byte[] bs = new byte[] {1, 2, 3, 4, 5};
+        foreach (var b in bs)
+        {
+            var p = input(b);
+            if (p == true) Debug.LogFormat($"---------b:{b}");
+        }
     }
 
     void Subject()

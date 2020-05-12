@@ -22,11 +22,11 @@ namespace AI.Architecture.iRoot.Subject
             }
         }
 
-        public void OnComplete()
+        public void OnCompleted()
         {
             foreach (var observer in observers)
             {
-                observer.OnComplete();
+                observer.OnCompleted();
             }
         }
 

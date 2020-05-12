@@ -31,7 +31,7 @@ namespace AI.Architecture.iRoot
                     try
                     {
                         observer.OnNext(value);
-                        observer.OnComplete();
+                        observer.OnCompleted();
                     }
                     catch (Exception exception)
                     {

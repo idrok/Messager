@@ -4,22 +4,22 @@ namespace AI.Architecture.iRoot
 {
     public static class AnonymsousObserver
     {
-        public static IObserver<T> Create<T>( Action<T> next, Action<Exception> error, Action complete) 
+        public static IObserver<T> Create<T>(Action<T> next, Action<Exception> error, Action completed) 
         {
-            return new Observer<T>(next, error, complete);
+            return new Observer<T>(next, error, completed);
         }
 
         class Observer<T> : IObserver<T>
         {
             readonly Action<T> onNext;
             readonly Action<Exception> onError;
-            readonly Action onComplete;
+            readonly Action onCompleted;
 
-            public Observer(Action<T> next, Action<Exception> error, Action complete)
+            public Observer(Action<T> next, Action<Exception> error, Action completed)
             {
                 onNext = next;
                 onError = error;
-                onComplete = complete;
+                onCompleted = completed;
             }
             
             public void OnNext(T value)
@@ -32,9 +32,9 @@ namespace AI.Architecture.iRoot
                 onError(error);
             }
 
-            public void OnComplete()
+            public void OnCompleted()
             {
-                onComplete();
+                onCompleted();
             }
         }
     }
