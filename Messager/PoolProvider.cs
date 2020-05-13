@@ -28,7 +28,7 @@ namespace Bnyx.Messager
         // 商城通知
         public static readonly MessageBroker STORE = new MessageBroker();
 
-        public static Dictionary<Message, MessageBroker> mMessageDic;
+        public static Dictionary<MessageVer2, MessageBroker> mMessageDic;
 
         private byte mLimits = 30;
         private static bool mInitialized = false;
@@ -46,8 +46,8 @@ namespace Bnyx.Messager
         private void InitPoolable()
         {
             // limit pools max up to [127]
-            mMessageDic = new Dictionary<Message, MessageBroker>(sbyte.MaxValue);
-            var values = Enum.GetValues(typeof(Message));
+            mMessageDic = new Dictionary<MessageVer2, MessageBroker>(sbyte.MaxValue);
+            var values = Enum.GetValues(typeof(MessageVer2));
             var count = values.Length;
             if (count < mLimits)
             {
@@ -55,7 +55,7 @@ namespace Bnyx.Messager
                 {
                     Debug.LogFormat($"---------------name:{value.ToString()}---value:{(uint) value}");
                     var broker = new MessageBroker();
-                    var type = (Message) value;
+                    var type = (MessageVer2) value;
                     mMessageDic.Add(type, broker);
                 }
             }
@@ -67,7 +67,7 @@ namespace Bnyx.Messager
 
         // 从池子里面取出需要的消息池子对象
         // 可以取出多个
-        public List<FilterEntity> Provider(Message multiType)
+        public List<FilterEntity> Provider(MessageVer2 multiType)
         {
             var result = Query(multiType);
 
@@ -75,13 +75,13 @@ namespace Bnyx.Messager
 
         }
 
-        private List<FilterEntity> Query(Message multiType)
+        private List<FilterEntity> Query(MessageVer2 multiType)
         {
             var cache = new List<FilterEntity>();
-            var values = Enum.GetValues(typeof(Message));
+            var values = Enum.GetValues(typeof(MessageVer2));
             foreach (var value in values)
             {
-                var type = (Message) value;
+                var type = (MessageVer2) value;
                 if ((multiType & type) == type) 
                 {
                     var broker = mMessageDic[type];

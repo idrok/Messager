@@ -42,13 +42,13 @@ namespace Bnyx.AI
             // result.Subscribe(i => print("-------------------i:" + i));
 
             _messager = BnyxMessager.GetSingleton();
-            var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
-            _messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
-
-            Message msg2 = default(Message);
-            var msg3 = msg2.Build(Message.UI_BAG, Message.UI_TOP_HEAD);
-            Debug.LogFormat("-------------msg2:" + msg2);
-            Debug.LogFormat("-------------msg3:" + msg3);
+            // var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
+            // _messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
+            //
+            // Message msg2 = default(Message);
+            // var msg3 = msg2.Build(Message.UI_BAG, Message.UI_TOP_HEAD);
+            // Debug.LogFormat("-------------msg2:" + msg2);
+            // Debug.LogFormat("-------------msg3:" + msg3);
             // foreach (var VARIABLE in msg.)
             // {
             //     
@@ -109,21 +109,21 @@ namespace Bnyx.AI
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                //MessageManager.Instance.Dispatch("MSG_LOCAL", new object[]{"bnyx", Time.deltaTime.ToString()});
-                // MessageBroker.Default.Publish( new MSG_NEWDAY() { Emotion = "not bad!"});
-                
-                var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." + Time.realtimeSinceStartup};
-                _messager.Public(Message.UI_CORE_FORM | Message.UI_CORE_AWARD, msg, false);
-            }
-
-            if (Input.GetKeyUp(KeyCode.T))
-            {
-                var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
-                _messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
-
-            }
+            // if (Input.GetMouseButtonDown(0))
+            // {
+            //     //MessageManager.Instance.Dispatch("MSG_LOCAL", new object[]{"bnyx", Time.deltaTime.ToString()});
+            //     // MessageBroker.Default.Publish( new MSG_NEWDAY() { Emotion = "not bad!"});
+            //     
+            //     var msg = new MSG_NEWDAY() { Emotion = "fresh sync code..." + Time.realtimeSinceStartup};
+            //     _messager.Public(Message.UI_CORE_FORM | Message.UI_CORE_AWARD, msg, false);
+            // }
+            //
+            // if (Input.GetKeyUp(KeyCode.T))
+            // {
+            //     var multiType = Message.UI_CORE_FORM | Message.UI_CORE_AWARD;
+            //     _messager.Receive<MSG_NEWDAY>(multiType).Subscribe(msg1 => print($"---------------msg:{msg1.Emotion}"));
+            //
+            // }
         }
         
         private class MSG_NEWDAY : IMessage
@@ -134,7 +134,60 @@ namespace Bnyx.AI
             {
                 get => emotion;
                 set => emotion = value;
+            }
+        }
+        
+        // 测试主题：单注册，单接收
+        // 使用多对多的情况非常少
+        [ContextMenu("Setup")]
+        void TestMultiSetup()
+        {
+            MSG_CARD card = new MSG_CARD() { Message = "MSG_CARD seek"};
+            _messager.Receive<MSG_CARD>(MessageVer2.CORE_CARD, card).Subscribe(value => Debug.LogFormat(value.Message));
 
+            MSG_ITEM item = new MSG_ITEM() {Message = "MSG_ITEM seek"};
+            _messager.Receive<MSG_ITEM>(MessageVer2.CORE_ITEM, item).Subscribe(value => Debug.LogFormat(value.Message));
+            
+            MSG_SKILL skill = new MSG_SKILL() {Message = "MSG_SKILL seek"};
+            _messager.Receive<MSG_SKILL>(MessageVer2.CORE_SKILL, skill).Subscribe(value => Debug.LogFormat(value.Message));
+        }
+
+        [ContextMenu("TestRun")]
+        void TestMultiReceive()
+        {
+            MSG_CARD card = new MSG_CARD() { Message = "MSG_CARD data"};
+            _messager.Public(MessageVer2.CORE_CARD, card);
+            
+            _messager.Receive<MSG_CARD>(MessageVer2.CORE_CARD, card).Subscribe(value => Debug.LogFormat(value.Message));
+        }
+
+        private class MSG_CARD : IMessage
+        {
+            private string data;
+            public string Message
+            {
+                get => data;
+                set => data = value;
+            }
+        }
+        
+        private class MSG_ITEM : IMessage
+        {
+            private string data;
+            public string Message
+            {
+                get => data;
+                set => data = value;
+            }
+        }
+        
+        private class MSG_SKILL : IMessage
+        {
+            private string data;
+            public string Message
+            {
+                get => data;
+                set => data = value;
             }
         }
     }

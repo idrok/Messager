@@ -1,3 +1,4 @@
+// ReSharper disable once InvalidXmlDocComment
 /**
  * 基于UniRx的游戏消息管理，可以实现同步消息，异步消息
  * v 1.1
@@ -10,6 +11,10 @@
 // v 2.0
 // 缓存最后一条消息数据，每次有订阅者发布当前池子里面的最新一条消息
 // 可以避免新开的ui没有数据的尴尬局面
+使用注意事项：
+多对多的关系总会偏向一边，通常来说订阅组的类型要比发布组的类型多
+比如我这个数据在
+
  */
 using System;
 using System.Collections.Generic;
@@ -53,11 +58,6 @@ namespace Bnyx.Messager {
             var value = new T();
             return broker.Receive<T>(seek??value);
         }
-
-        public T RefSeek<T>(T value) where T : IMessage, new()
-        {
-            return value;
-        }
         
         /// <summary>
         /// 订阅消息组
@@ -66,7 +66,7 @@ namespace Bnyx.Messager {
         /// <param name="seek">种子数据，第一次有效</param>
         /// <typeparam name="T">种子数据类型</typeparam>
         /// <returns>可观察的结果</returns>
-        public IObservable<T> Receive<T> (Message multiType, T seek = null) where T : IMessage, new()
+        public IObservable<T> Receive<T> (MessageVer2 multiType, T seek = null) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
             //IObservable<T> root = Observable.Empty<T>();
@@ -122,7 +122,7 @@ namespace Bnyx.Messager {
             }
         }
 
-        public void Public<T>(Message multiType, T value, bool sync = true) where T : IMessage, new()
+        public void Public<T>(MessageVer2 multiType, T value, bool sync = true) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
             if (sync == true)
