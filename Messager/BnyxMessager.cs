@@ -47,10 +47,11 @@ namespace Bnyx.Messager {
         
         // 默认订阅的消息组，全局事件
         // 单一订阅
-        public IObservable<T> Receive<T> (MessageFixed fixedType) where T : IMessage, new()
+        public IObservable<T> Receive<T> (MessageFixed fixedType, T seek = null) where T : IMessage, new()
         {
             MessageBroker broker = GetFixedBroker(fixedType);
-            return broker.Receive<T>(null);
+            var value = new T();
+            return broker.Receive<T>(seek??value);
         }
 
         public T RefSeek<T>(T value) where T : IMessage, new()

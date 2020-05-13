@@ -90,5 +90,67 @@ namespace AI.Architecture.iRoot
             // 入口函数如果有泛型版本，必须指定约束之后的数据类型
             return AnonymsousObservable.Create<T>(FuncSubscribe);
         }
+
+        /// <summary>
+        /// ???
+        /// </summary>
+        /// <param name="source"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IObservable<T> Merge<T>(this IObservable<IObservable<T>> source)
+        {
+            CompositeDisposable group = new CompositeDisposable();
+
+            IDisposable MergeSubscribe(IObserver<T> observer)
+            {
+                var first = source.Subscribe(inner =>
+                {
+                    var dispose = inner.Subscribe(observer.OnNext);
+                    group.Add(dispose);
+                }, observer.OnError, observer.OnCompleted);
+                group.Add(first);
+                
+                return group;
+            }
+
+            return AnonymsousObservable.Create<T>(MergeSubscribe);
+        }
+
+        public static IObservable<T> Delay<T>(this IObservable<T> source, TimeSpan dueTime, IScheduler scheduler)
+        {
+            CompositeDisposable group = new CompositeDisposable();
+            
+            IDisposable DelaySubscribe(IObserver<T> observer)
+            {
+                void NextOp(T value)
+                {
+                    var disposeSchedule = scheduler.Schedule(() => observer.OnNext(value), dueTime);
+                    group.Add(disposeSchedule);
+                }
+                var filterOp = source.Subscribe(NextOp, observer.OnError, observer.OnCompleted);
+                group.Add(filterOp);
+                return group;
+            }
+            
+            return AnonymsousObservable.Create<T>(DelaySubscribe);
+        }
+
+        public static IObservable<T> ObserverOn<T>(this IObservable<T> source, IScheduler scheduler)
+        {
+            CompositeDisposable group = new CompositeDisposable();
+            IDisposable ObserverSubscribe(IObserver<T> observer)
+            {
+                var outter = source.Subscribe(value =>
+                {
+                    var inner = scheduler.Schedule(() => observer.OnNext(value));
+                    group.Add(inner);
+                }, observer.OnError, observer.OnCompleted);
+                group.Add(outter);
+                return group;
+            }
+            
+            return AnonymsousObservable.Create<T>(ObserverSubscribe);
+        }
+
     }
 }

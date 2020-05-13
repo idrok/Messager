@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Leng.Exception;
 
 namespace Bnyx.AI
 {
@@ -222,7 +223,16 @@ namespace Bnyx.AI
 
         public TeamEntity GetDefaultEnemy()
         {
-            return mEnemies[mDefaultIndex].Units()[mDefaultIndex];
+            var group = mEnemies[mDefaultIndex];
+            if (group.Units().Count > 0)
+            {
+                var enemy = group.Units()[mDefaultIndex];
+                return enemy;
+            }
+            else
+            {
+                throw new BnyxException("get enemy is null.");
+            }
         }
 
         public int GetEnemyGroupCount()

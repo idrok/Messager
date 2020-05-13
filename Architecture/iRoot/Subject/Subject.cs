@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AI.Architecture.iRoot.Subject
+namespace AI.Architecture.iRoot
 {
-    public class Subject<T> : ISubject<T>
+    public sealed class Subject<T> : ISubject<T>
     {
         LinkedList<IObserver<T>> observers = new LinkedList<IObserver<T>>();
         public void OnNext(T value)

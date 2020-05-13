@@ -12,6 +12,8 @@ using Observable = AI.Architecture.iRoot.Observable;
 using CompositeDisposable = AI.Architecture.iRoot.CompositeDisposable;
 using ObservableWWW = AI.Architecture.iRoot.ObservableWWW;
 using Random = UnityEngine.Random;
+using Scheduler = AI.Architecture.iRoot.Scheduler;
+using Tuple = AI.Architecture.iRoot.Tuple;
 
 public class TestArchitecture : MonoBehaviour
 {
@@ -32,8 +34,10 @@ public class TestArchitecture : MonoBehaviour
         //     }
         // }
         
-        // Observable1();
-        TestPrid(i => i > 3);
+        Observable1();
+        //TestPrid(i => i > 3);
+        var tuple = Tuple.Create<byte, byte>(1, 1);
+        Debug.LogFormat($"tuple item1:{tuple.Item1} item2:{tuple.Item2}");
     }
 
     void Observable1()
@@ -56,7 +60,9 @@ public class TestArchitecture : MonoBehaviour
         // ls.Add(11);
         // Predicate<byte> prd = b => b > 10;
         // var result = prd(20);
-        
+
+        Observable.Range(1, 1).Delay(TimeSpan.FromSeconds(3f), Scheduler.GameLoop)
+            .Subscribe(value => Debug.LogFormat($"delay:{value}"));
     }
 
     void TestPrid(Predicate<byte> input)
@@ -71,7 +77,7 @@ public class TestArchitecture : MonoBehaviour
 
     void Subject()
     {
-        Subject<byte> subject = new Subject<byte>();
+        // AI.Architecture.iRoot.Subject<byte> subject = new Subject<byte>();
         
         AsyncSubject<byte> async = new AsyncSubject<byte>();
         

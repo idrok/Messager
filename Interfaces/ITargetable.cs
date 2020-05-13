@@ -22,7 +22,7 @@ namespace Bnyx.AI
     {
         NullTarget,  // 没有目标
         Enemy,       // 敌方
-        Team,        // 友方
+        Hero,        // 英雄
         MySelf       // 自身
         
     }

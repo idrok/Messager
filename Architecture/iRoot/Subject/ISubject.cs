@@ -1,4 +1,4 @@
-﻿namespace AI.Architecture.iRoot.Subject
+﻿namespace AI.Architecture.iRoot
 {
     // 定义接口对应的观察类型，1对1
     public interface ISubject<in TSource, out TResult> : IObserver<TSource>, IObservable<TResult>

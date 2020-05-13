@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Bnyx.AI;
+using Tang.Controller.Role.Controller;
 using UnityEngine;
 
 namespace AI.Target
@@ -15,6 +16,11 @@ namespace AI.Target
         private SearchMatch mMatch;
         private SearchType mSearchType;
 
+        private Collider[] mColliders;
+        private float mBodyFar = 50f;
+
+        private BnyxTeam mTeam;
+        
         public TeamEntity Entity
         {
             get => mEntity;
@@ -31,15 +37,28 @@ namespace AI.Target
             mTargetList = new BnyxTargetList();
             mMatch = SearchMatch.BodyFar_50;
             mSearchType = SearchType.BodyFar_10;
+            // 单次检测的最大目标数为 32
+            mColliders = new Collider[32];
+            mTeam = BnyxTeam.GetSingleton();
         }
 
         private BnyxTargetList GetEnemyMatchList()
         {
+            BnyxTargetList list = new BnyxTargetList();
             if (mMatch == SearchMatch.BodyFar_50)
             {
-                Collider[] results = default(Collider[]);
-                // todo 
-                // Physics.sph(mEntity.Body.position, 50f, results);
+                mBodyFar = 50f;
+                var founds = Physics.OverlapSphereNonAlloc(mEntity.Body.position, mBodyFar, mColliders);
+                for (int i = 0; i < founds; i++)
+                {
+                    var collider = mColliders[i];
+                    var controller = collider.GetComponent<RoleInputController>();
+                    if (controller && controller._Type == Bnyx.AI.Target.Hero)
+                    {
+                        
+                        //list.Add();
+                    }
+                }
             }
 
             return null;
