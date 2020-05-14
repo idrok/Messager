@@ -11,14 +11,17 @@
 // v 2.0
 // 缓存最后一条消息数据，每次有订阅者发布当前池子里面的最新一条消息
 // 可以避免新开的ui没有数据的尴尬局面
-使用注意事项：
-多对多的关系总会偏向一边，通常来说订阅组的类型要比发布组的类型多
-比如我这个数据在
+使用注意事项：正常1对1，多对多谨慎使用，多数据类型获取分别订阅数据
+// v 2.1 
+// 添加种子数据验证
+// 第一个商用版本
+todo 再次简化封装到项目
 
  */
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bnyx.AI;
 using UniRx;
 
 namespace Bnyx.Messager {
@@ -56,44 +59,60 @@ namespace Bnyx.Messager {
         {
             MessageBroker broker = GetFixedBroker(fixedType);
             var value = new T();
-            return broker.Receive<T>(seek??value);
+            if (seek != null)
+            {
+                var vaild = seek.SEEK;
+                if (vaild == true)
+                {
+                    value = seek;
+                    seek.SEEK = false;
+                }
+                else
+                {
+                    throw new BnyxMessageException("Fatal：无效的种子数据或已经存在种子数据");
+                }
+            }
+            return broker.Receive<T>(value);
         }
         
         /// <summary>
-        /// 订阅消息组
+        /// 订阅消息组，游戏初始化
         /// </summary>
         /// <param name="multiType">作用域</param>
         /// <param name="seek">种子数据，第一次有效</param>
         /// <typeparam name="T">种子数据类型</typeparam>
+        /// todo 种子数据不能通过指定更新，只能通过publish来更新
         /// <returns>可观察的结果</returns>
-        public IObservable<T> Receive<T> (MessageVer2 multiType, T seek = null) where T : IMessage, new()
+        public IObservable<T> Receive<T> (MessageVer2 multiType, T seek) where T : IMessage, new()
         {
             var query = mProvider.Provider(multiType);
-            //IObservable<T> root = Observable.Empty<T>();
-            //List<IObservable<T>> caches = new List<IObservable<T>>();
             IObservable<T>[] array = new IObservable<T>[query.Count]; 
-            // foreach(var entity in query)
-            // {
-            //     if (entity.Valid == true)
-            //     {
-            //         var receive = entity.Broker.Receive<T>();
-            //         caches.Add(receive);
-            //     }
-            // }
             
-            var value = new T();
+            var value = default(T);
             for (byte i = 0; i < array.Length; i++)
             {
                 var entity = query[i];
                 if (entity.Valid == true)
                 {
-                    var receive = entity.Broker.Receive<T>(seek??value);
+                    if (seek != null)
+                    {
+                        var vaild = seek.SEEK;
+                        if (vaild == true)
+                        {
+                            value = seek;
+                            seek.SEEK = false;
+                        }
+                        else
+                        {
+                            throw new BnyxMessageException("Fatal：无效的种子数据或已经存在种子数据");
+                        }
+                    }
+                    var receive = entity.Broker.Receive<T>(value);
                     array[i] = receive; 
                 }
             }
 
-            //var observables = caches.ToArray();
-            var merge = Observable.Merge(array);//.DefaultIfEmpty(value);
+            var merge = Observable.Merge(array);
             
             if (mNeedDistinct)
             {
@@ -104,6 +123,17 @@ namespace Bnyx.Messager {
                 return merge;
             }
             // throw new BnyxMessageException($"当前接受的消息类型组不存在{multiType}");
+        }
+
+        /// <summary>
+        /// 正常使用接口
+        /// </summary>
+        /// <param name="multiType"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IObservable<T> Receive<T>(MessageVer2 multiType) where T : IMessage, new()
+        {
+            return Receive<T>(multiType, null);
         }
         
         #endregion

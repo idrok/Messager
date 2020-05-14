@@ -7,6 +7,7 @@ using Bnyx.Messager;
 using Tang;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Task = System.Threading.Tasks.Task;
 using Time = Tang.Time;
 
@@ -142,13 +143,13 @@ namespace Bnyx.AI
         [ContextMenu("Setup")]
         void TestMultiSetup()
         {
-            MSG_CARD card = new MSG_CARD() { Message = "MSG_CARD seek"};
+            MSG_CARD card = new MSG_CARD() { Message = "MSG_CARD seek", SEEK = true};
             _messager.Receive<MSG_CARD>(MessageVer2.CORE_CARD, card).Subscribe(value => Debug.LogFormat(value.Message));
 
-            MSG_ITEM item = new MSG_ITEM() {Message = "MSG_ITEM seek"};
+            MSG_ITEM item = new MSG_ITEM() {Message = "MSG_ITEM seek", SEEK = true};
             _messager.Receive<MSG_ITEM>(MessageVer2.CORE_ITEM, item).Subscribe(value => Debug.LogFormat(value.Message));
             
-            MSG_SKILL skill = new MSG_SKILL() {Message = "MSG_SKILL seek"};
+            MSG_SKILL skill = new MSG_SKILL() {Message = "MSG_SKILL seek", SEEK = true};
             _messager.Receive<MSG_SKILL>(MessageVer2.CORE_SKILL, skill).Subscribe(value => Debug.LogFormat(value.Message));
         }
 
@@ -158,7 +159,7 @@ namespace Bnyx.AI
             MSG_CARD card = new MSG_CARD() { Message = "MSG_CARD data"};
             _messager.Public(MessageVer2.CORE_CARD, card);
             
-            _messager.Receive<MSG_CARD>(MessageVer2.CORE_CARD, card).Subscribe(value => Debug.LogFormat(value.Message));
+            _messager.Receive<MSG_CARD>(MessageVer2.CORE_CARD).Subscribe(value => Debug.LogFormat(value.Message), () => Debug.LogFormat("OnCompleted"));
         }
 
         private class MSG_CARD : IMessage
