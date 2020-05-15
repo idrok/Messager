@@ -120,6 +120,23 @@ namespace Bnyx.AI
             }
         }
 
+        /// <summary>
+        /// 获取默认的玩家组，游戏当前默认只有一个组玩家
+        /// </summary>
+        /// <returns></returns>
+        public PlayerGroup GetDefaultPlayerGroup()
+        {
+            var group = GetPlayerGroup();
+            if (group.Count > 0)
+            {
+                return group[0];
+            }
+            else
+            {
+                throw new BnyxTeamException("Fatal：没有默认的玩家组");
+            }
+        }
+        
         public IList<PlayerGroup> GetPlayerGroup()
         {
             return mPlayers;
@@ -215,6 +232,23 @@ namespace Bnyx.AI
                 throw new BnyxTeamException($"你当前移除的敌对组{enemyGroup.Name}不存在");
             }
         }
+        
+        /// <summary>
+        /// 获取默认的Enemy组，游戏当前默认只有一个组Enemy
+        /// </summary>
+        /// <returns></returns>
+        public EnemyGroup GetDefaultEnemyGroup()
+        {
+            var group = GetEnemyGroup();
+            if (group.Count > 0)
+            {
+                return group[0];
+            }
+            else
+            {
+                throw new BnyxTeamException("Fatal：没有默认的Enemy组");
+            }
+        }
 
         public List<EnemyGroup> GetEnemyGroup()
         {
@@ -241,7 +275,18 @@ namespace Bnyx.AI
         }
         
         #endregion
-        
-        
+
+        #region 通用函数组
+
+        /// <summary>
+        /// 获取所有默认组的 Enemy
+        /// </summary>
+        /// <returns></returns>
+        public IList<TeamEntity> GetAllEnemies()
+        {
+            return GetDefaultEnemyGroup().Units();
+        }
+
+        #endregion
     }
 }

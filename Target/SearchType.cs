@@ -1,4 +1,4 @@
-﻿namespace AI.Target
+﻿namespace Bnyx.AI
 {
     public enum SearchType
     {

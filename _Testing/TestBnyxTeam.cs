@@ -27,7 +27,7 @@ namespace Bnyx.AI
         {
             mTeam = BnyxTeam.GetSingleton();
             TeamEntity player = new TeamEntity();
-            player.Entity = new GameObject("Player");
+            player.GameObj = new GameObject("Player");
             player.Ids = player.GetEntityId();
             player.Type = GroupType.PLAYER;
             player.Valid = true;
@@ -43,7 +43,7 @@ namespace Bnyx.AI
             //mTeam.AddNewPlayer(player, false, 1);
             
             TeamEntity enemy = new TeamEntity();
-            enemy.Entity = new GameObject("Enemy");
+            enemy.GameObj = new GameObject("Enemy");
             enemy.Ids = enemy.GetEntityId();
             enemy.Type = GroupType.ENEMY;
             enemy.Valid = true;

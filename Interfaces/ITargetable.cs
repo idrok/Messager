@@ -15,15 +15,6 @@ namespace Bnyx.AI
         /// </summary>
         /// <param name="predicate">筛选器</param>
         /// <returns>筛选到的结果</returns>
-        BnyxTargetList SearchEntity(Predicate<TeamEntity> predicate);
-    }
-
-    public enum Target
-    {
-        NullTarget,  // 没有目标
-        Enemy,       // 敌方
-        Hero,        // 英雄
-        MySelf       // 自身
-        
+        void SearchEntity(Predicate<TeamEntity> predicate);
     }
 }

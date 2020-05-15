@@ -6,7 +6,7 @@ namespace Bnyx.AI
     {
         private GroupType mType;
 
-        private GameObject mEntity;
+        private GameObject mGameObj;
 
         // 每次有实体对象加入的时候，生成一个ID
         // 用于索引和快速查询
@@ -19,11 +19,29 @@ namespace Bnyx.AI
         private float mWeightPercent;
 
         private Transform mDummyCache;
+        private TargetableHook mHook;
 
-        public GameObject Entity
+        public GameObject GameObj
         {
-            get => mEntity;
-            set => mEntity = value;
+            get => mGameObj;
+            set => mGameObj = value;
+        }
+
+        public TargetableHook Hook
+        {
+            get
+            {
+                if (mHook == null)
+                {
+                    mHook = mGameObj.GetComponent<TargetableHook>();
+                    if (mHook == null)
+                    {
+                        throw new BnyxTargetException("没有挂载Hook脚本");
+                    }
+                }
+
+                return mHook;
+            }
         }
 
         public Transform Body
@@ -33,7 +51,7 @@ namespace Bnyx.AI
                 // advance code, once init would cache everywhere
                 if (mDummyCache == null)
                 {
-                    var dummy = mEntity.transform.FindChild("PointPrefab");
+                    var dummy = mGameObj.transform.FindChild("PointPrefab");
                     
                     if (dummy != null)
                     {
@@ -41,7 +59,7 @@ namespace Bnyx.AI
                     }
                     else
                     {
-                        mDummyCache = mEntity.transform;
+                        mDummyCache = mGameObj.transform;
                     }
                 }
                 
@@ -81,7 +99,7 @@ namespace Bnyx.AI
 
         public int GetEntityId()
         {
-            return mEntity.GetHashCode();
+            return mGameObj.GetHashCode();
         }
     }
 }
