@@ -6,7 +6,7 @@ namespace GameInnvoation.ExcelReader
     /// <summary>
     /// 该类为保存数据的持久化
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     [CreateAssetMenu(fileName = "innvoation", menuName = "ExcelReader", order = 0)]
     public class ScriptableExcels : ScriptableObject
     {
@@ -19,6 +19,7 @@ namespace GameInnvoation.ExcelReader
         [Multiline, Header("xlsx文件路径，多个文件逗号(,)分隔")]
         public string _ExcelPath;
 
+        [SerializeField, HideInInspector]
         private byte[] _ExcelMemoryData;
 
         public byte[] ExcelMemoryData
