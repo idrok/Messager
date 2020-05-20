@@ -44,7 +44,7 @@ namespace GameInnvoation.ExcelReader
         private void CheckResPath() 
         {
              var asset = (ScriptableExcels)target;
-             var origin = asset._ExcelPath.Replace("，", ",");
+             var origin = asset.ExcelPath.Replace("，", ",");
              var paths = origin.Split(',');
              var filePath = "";
              mVaildPaths.Clear();
@@ -53,7 +53,7 @@ namespace GameInnvoation.ExcelReader
              {
                  if (string.IsNullOrWhiteSpace(path) == false)
                  {
-                     if (asset._IsRelativePath == true)
+                     if (asset.IsRelativePath == true)
                      {
                          filePath = Path.Combine(Application.dataPath, path);
                      }
@@ -69,7 +69,6 @@ namespace GameInnvoation.ExcelReader
                      }
                      else
                      {
-                         Debug.LogFormat(COLOR_HEX, "Step1 ----------> 资源路径检查 OK");
                          mVaildPaths.Add(filePath);
                      }
                  }
@@ -78,6 +77,7 @@ namespace GameInnvoation.ExcelReader
                      // EditorUtility.DisplayDialog("文件路径校验", $"{filePath}\r\n路径无效？", "确定");
                  }
              }
+             Debug.LogFormat(COLOR_HEX, "Step1 ----------> 资源路径检查 OK");
         }
 
         private void ImportBytes()
